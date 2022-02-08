@@ -1,30 +1,16 @@
 # Free_Games.py Description
 
-![](https://img.shields.io/github/stars/MasonStooksbury/Free-Games)
-![](https://img.shields.io/github/forks/MasonStooksbury/Free-Games)
-![](https://img.shields.io/github/license/MasonStooksbury/Free-Games)
-![](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2FMasonStooksbury%2FFree-Games)
+https://github/Yeshey/Free-Epic-Games
 
-Literally just a script that is automatically ran via Windows Task Scheduler or Cron that logs into the Epic Games Store website and grabs the free games for the week. I've tested it on Windows, but there isn't any reason it wouldn't work on Linux as well. Just change the top line from `#! python3` to `#!/usr/bin/python3` and it should be fine. 
+![](https://img.shields.io/github/stars/Yeshey/Free-Epic-Games)
+![](https://img.shields.io/github/forks/Yeshey/Free-Epic-Games)
+![](https://img.shields.io/github/license/Yeshey/Free-Epic-Games)
+[![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FYeshey%2FFree-Epic-Games)](https://twitter.com/Yeshey24726112)
 
-Big shout-out to [@ergoithz](https://github.com/ergoithz) and their amazing function that finds the xpath for a given BeautifulSoup object. These updates wouldn't be possible without it! Check out their super-helpful function here: https://gist.github.com/ergoithz/6cf043e3fdedd1b94fcf
 
-Another *huge* shout-out to [@SonOfDiablo](https://github.com/SonOfDiablo) for creating and providing their awesome PowerShell script for installing geckodriver on Windows! Now you don't have to follow all the steps mentioned before. Just install the PowerShell script, and run it. This will: download and install the latest geckodriver for the correct architecture, install it, and add it to your path if it isn't already there: automagically! Find the script here: https://gist.github.com/SonOfDiablo/81f3d610295c69c777b512e4da90393d
+Script that can be automatically ran via Windows Task Scheduler or Cron that logs into the Epic Games Store website and grabs the free games for the week. Tested on Windows, but there isn't any reason it wouldn't work on Windows as well. Just change the top line from `#! python3` (windows) to `#!/usr/bin/python3` (linux) and it should be fine. 
 
-Finally, a warm thank you to:
-  - [@Andriesmenze](https://github.com/Andriesmenze) for fixing the script to work in the EU due to certain pop-ups that I wasn't seeing. Their work is very appreciated!
-  - [@Steve-Tech](https://github.com/Steve-Tech) for adding some code to click the "Sign in with Epic Games" that apparently shows up now.
-  - [@Spifffff](https://github.com/Spifffff) for modifying the Xpath for the cookies banner, for noticing that EGS requires email-only for logging in now, and for modifying the script to work with the games carousel that shows up sometimes
-  - [@lemasato](https://github.com/lemasato) for adding 2FA support, adding some more reliability and readability changes as well as adding functionality for multiple accounts to be used and staying on top of changes they do to the site like text on buttons and what not.
-  - [@Medallyon](https://github.com/Medallyon) for cleaning up my README file, adding "requirements.txt" functionality, and making some important syntax changes as well as some credential detection stuff. This will help cut down on install time/complexity significantly.
-  - [@astranberg](https://github.com/astranberg) for expanding on multi-user support so you can now collect all the free games for multiple accounts.
-
-Hope you enjoy!
-  #! Mason Stooksbury
-
-### Updates! (12/21/2020)
-  - Multi-user support so that free games can be claimed for as many accounts as you have.
-  - Thank you again! In just a month we've gained like 20 more stars for a total of 80! And almost 10 more forks! You all continue to humble me with the amount of support this thing has gotten. Thank you again, and may your 2021 be so much better than this year.
+Inspiered by [Mason Stooksburys](https://github.com/MasonStooksbury)  [bots repository](https://github.com/MasonStooksbury/Free-Games), this version of the bot uses pyautogui to view the buttons it mut press on screen making it harder for the site to detect it is a bot. I wasn't able to use his bot due to captchas.
 
 # Setup
 

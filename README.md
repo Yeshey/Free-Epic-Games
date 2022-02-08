@@ -1,14 +1,12 @@
 # Free_Games.py Description
 
-https://github/Yeshey/Free-Epic-Games
-
 ![](https://img.shields.io/github/stars/Yeshey/Free-Epic-Games)
 ![](https://img.shields.io/github/forks/Yeshey/Free-Epic-Games)
 ![](https://img.shields.io/github/license/Yeshey/Free-Epic-Games)
 [![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FYeshey%2FFree-Epic-Games)](https://twitter.com/Yeshey24726112)
 
 
-Script that can be automatically ran via Windows Task Scheduler or Cron that logs into the Epic Games Store website and grabs the free games for the week. Tested on Windows, but there isn't any reason it wouldn't work on Windows as well. Just change the top line from `#! python3` (windows) to `#!/usr/bin/python3` (linux) and it should be fine. 
+Script that can be automatically ran via Windows Task Scheduler or Cron that logs into the Epic Games Store website and grabs the free games for the week. Tested on Linux, but there isn't any reason it wouldn't work on Windows as well. Just change the top line from `#! python3` (windows) to `#!/usr/bin/python3` (linux) and it should be fine. 
 
 Inspiered by [Mason Stooksburys](https://github.com/MasonStooksbury)  [bots repository](https://github.com/MasonStooksbury/Free-Games), this version of the bot uses pyautogui to view the buttons it mut press on screen making it harder for the site to detect it is a bot. I wasn't able to use his bot due to captchas.
 
@@ -16,26 +14,18 @@ Inspiered by [Mason Stooksburys](https://github.com/MasonStooksbury)  [bots repo
 
 ## Requirements
 
-First, clone this repo using `git clone https://github.com/MasonStooksbury/Free-Games.git`. Then,
+First, clone this repo using `git clone https://github.com/Yeshey/Free-Epic-Games.git`. Then,
 
-1. Run `pip install -r requirements.txt` to automatically install dependencies
-
-***OR***
-
-Install them manually:
-  + `pip install lxml` (for parsing the HTML from the webpage)
-  + `pip install selenium` (for "roboting" the website)
-  + `pip install beautifulsoup4` (for better/more robust finding of objects and things)
+Install dependencies:
   + `pip install pyotp` (for two-factor authentication)
+  + ...?
 
 ### Additionally
 
-+ `GeckoDriver` (selenium needs this) Linux users can use this script to do everything for you after installing "jq" which is a JSON processor: https://gist.github.com/cgoldberg/4097efbfeb40adf698a7d05e75e0ff51. Windows users can use this script provided by [@SonOfDiablo:](https://github.com/SonOfDiablo:) https://gist.github.com/SonOfDiablo/81f3d610295c69c777b512e4da90393d.
 + [Firefox](https://www.mozilla.org/firefox/new/) - You can technically do all of this with Chrome, but it involves some more setup with selenium and particular drivers and I'm just too lazy. This works perfectly fine.
 + Enter the `EPIC_EMAIL` and `EPIC_PASSWORD` variables in the `.env` file to match your Epic Games Store account. Don't include any quotes here.
 + You may add multiple user accounts using comma separated values, e.g. `EPIC_EMAIL=a@a.com,b@b.com` `EPIC_PASSWORD=pass1,pass2`
 + While the scipt will technically work without 2FA enabled on your epic account, you will likely see many more captchas. In order to avoid this, follow the steps [here](###Two-factor-authentication) to enable 2FA on your account and configure the script to work with your 2FA secret. 
-+ Finally, you may also want to jump into `Free_Games.py` and replace the `user_agent` variable (but you don't have to). There are instructions inside the script on how to do this. 
 
 ### Two-factor authentication
 

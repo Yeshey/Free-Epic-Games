@@ -1,3 +1,4 @@
+from multiprocessing.connection import wait
 from queue import Empty
 import webbrowser
 import pyautogui
@@ -6,6 +7,7 @@ import time
 import sys          
 import subprocess
 import pyperclip
+import clipboard
 import lxml.html, pyotp, re, sys, time, traceback
 import tempfile
 from datetime import datetime
@@ -23,7 +25,7 @@ epic_store_url = "https://www.epicgames.com/store/en-US/?lang=en-US"
 epic_login_url = "https://www.epicgames.com/id/login/epic"
 epic_logout_url = 'https://www.epicgames.com/id/logout'
 
-def open_browser(url, whichBrowser=Empty):
+def open_browser(whichBrowser=Empty):
     '''
     if (whichBrowser == Empty):
         if sys.platform=='win32':
@@ -41,31 +43,40 @@ def open_browser(url, whichBrowser=Empty):
         else:
             os.system("firefox --private-window " + url)
     '''
-    isfullscreanurl = 'data:text/html,<title>FullScreen?</title><body><div class="answer"></div></body><style>body{background-color:white !important;} .answer{position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);height: 90vh;width: 90vw;display:grid;place-items: center;font-size: min(80vh,40vw);font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;}</style><script>function updt() { if((window.fullScreen) || (window.innerWidth == screen.width && window.innerHeight == screen.height)) {str = "YES"} else {str = "NO"} document.querySelector(".answer").innerHTML=str } window.addEventListener("resize", () => { updt() }); updt()</script>'
 
-    #https://www.kite.com/python/answers/how-to-write-to-an-html-file-in-python
-    html = '<html> ...  generated html string ...</html>'
-    with tempfile.NamedTemporaryFile('w', delete=False, suffix='.html') as f:
-        url = 'file://' + f.name
-        f.write(html)
-    webbrowser.open(url)
+    #document.body.requestFullscreen.call(document.body)
 
-    exit()
+    freenow="imgs/FREENOW.png"
 
     if (whichBrowser == Empty):
-        webbrowser.get().open(isfullscreanurl)
+        webbrowser.get().open(freenow)
     else:
-        webbrowser.get(whichBrowser).open(isfullscreanurl)
+        webbrowser.get(whichBrowser).open(freenow)
 
-    
+    # javascript that adds an eventlistner that once the page comes into focus, deletes itself and enables fullscreen
+    # javaScriptFullScreen = 'document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler); document.body.requestFullscreen(); });'
+    # WTF IS THIS TRASH FULLSCREEN?!? CANT EVEN USE CTRL+L
 
-    #pyautogui.hotkey('ctrl', 'shift', 'n')
-    img = wait_to_see('NO.png', True, 20, 'YES.png')
-    if img is None:
-        pyautogui.press('F11')
-        img = wait_to_see('NO.png', True, 20, 'YES.png')
-    img = pyautogui.locateCenterOnScreen('imgs/NO.png', grayscale=True, confidence=.7)
+    # javascript that adds an eventlistner that once the page comes into focus, deletes itself and puts in the clipboard if the browser is or not in fullscreen
+    javaScriptFullScreen2 = ' document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler);  if(!window.screenTop && !window.screenY){ str = "YES" } else { str = "NO" } navigator.clipboard.writeText(str); });    '
+    pyperclip.copy(javaScriptFullScreen2)
+
+    img = wait_to_see('FREENOW.png', True, 5)
     if img is not None:
+        pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
+        time.sleep(0.3)
+        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.press ('enter')
+        pyautogui.click(img) # because tab needs to be in focus to enter fullscrean
+        pyautogui.press('F12')
+
+        isFullScreen = clipboard.paste()
+        if (isFullScreen == 'NO'):
+            pyautogui.press('F11')
+        elif (isFullScreen != 'YES'):
+            print("Couldnt determine if fullscreen")
+            exit()
+    else:
         pyautogui.press('F11')
 
 def wait_to_see(rec_img, moveMouse = True, timeout=20, rec_img2=Empty):
@@ -89,18 +100,17 @@ def wait_to_see(rec_img, moveMouse = True, timeout=20, rec_img2=Empty):
     return img
 
 def go_to_url(url):
-    #pyautogui.hotkey('ctrl', 'l')
-    #for letter in url:    
-    #    pyperclip.copy(letter)
-    #    pyautogui.hotkey('ctrl', 'v')
-    #pyautogui.press ('enter')
+    time.sleep(0.1)
     pyautogui.hotkey('ctrl', 'l')
+    time.sleep(0.1)
     pyperclip.copy(url)
+    time.sleep(0.1)
     pyautogui.hotkey('ctrl', 'v')
+    time.sleep(0.1)
     pyautogui.press ('enter')
 
 def log_into_account(email, password, two_fa_key=None):
-    time.sleep(1)
+    go_to_url(epic_store_url)
     wait_to_see('LanguageGlobe.png')
     
     # Log out if need be
@@ -161,6 +171,6 @@ def claim_free_games():
 
 if __name__ == '__main__':
     for credentials in credentialslist:
-        open_browser(epic_store_url,"firefox")
+        open_browser("firefox")
         log_into_account(*credentials)
         claim_free_games()

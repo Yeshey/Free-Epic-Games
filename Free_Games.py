@@ -155,43 +155,50 @@ def log_into_account(email, password, two_fa_key=None):
         pyautogui.press ('enter')
 
 def claim_free_games():
-    go_to_url("file://" + ROOT_DIR + "/imgs/FREENOW.png")
-    wait_to_see("FREENOW.png")
-    go_to_url(epic_store_url)
-    wait_to_see('LanguageGlobe.png')
-    key_to_press = 'space'
-    while True:
-        img = pyautogui.locateCenterOnScreen('imgs/FREENOW.png', grayscale=True, confidence=.7)
-        if img is not None:
+    amount_of_free_games = -1
+
+    while amount_of_free_games != 0:
+        amount_of_free_games-=1
+        go_to_url("file://" + ROOT_DIR + "/imgs/FREENOW.png")
+        wait_to_see("FREENOW.png")
+        go_to_url(epic_store_url)
+        wait_to_see('LanguageGlobe.png')
+        key_to_press = 'space'
+        while True:
             img = pyautogui.locateCenterOnScreen('imgs/FREENOW.png', grayscale=True, confidence=.7)
             if img is not None:
-                pyautogui.click(img)
-                break
-            else:
-                key_to_press = "up"
-        pyautogui.press (key_to_press)
-    
+                imgs_list = list(pyautogui.locateAllOnScreen('imgs/FREENOW.png', grayscale=True, confidence=0.95))
+                if(len(imgs_list) == 0):
+                    key_to_press = "up"
+                else:
+                    if (amount_of_free_games < 0): # only updates one time, then never again
+                        amount_of_free_games = len(imgs_list)-1 # -1 because we're already in the first iteration
+                    img = imgs_list[amount_of_free_games-1]
+                    pyautogui.click(x=img.left+(img.width/2), y=img.top+(img.height/2))
+                    break
 
-    # wait to see in_library.png or get.png
-    img = wait_to_see('get.png', True, 20, 'IN_LIBRARY.png')
+            pyautogui.press (key_to_press)
+            
+        # wait to see in_library.png or get.png
+        img = wait_to_see('get.png', True, 20, 'IN_LIBRARY.png')
 
-    img = pyautogui.locateCenterOnScreen('imgs/get.png', grayscale=True, confidence=.7) 
-    if img is not None:
-        pyautogui.click(img)
-        img = wait_to_see('PLACE_ORDER.png')
+        img = pyautogui.locateCenterOnScreen('imgs/get.png', grayscale=True, confidence=.7) 
         if img is not None:
             pyautogui.click(img)
-            img = wait_to_see('I_Agree.png')
+            img = wait_to_see('PLACE_ORDER.png')
             if img is not None:
                 pyautogui.click(img)
-                wait_to_see('Thank_u_for_buying.png',True, 7)
-                return
-        
-        print("Something changed!")
-        exit()
-    else:
-        print("No free games here")
-        return
+                img = wait_to_see('I_Agree.png')
+                if img is not None:
+                    pyautogui.click(img)
+                    wait_to_see('Thank_u_for_buying.png',True, 7)
+                    return
+            
+            print("Something changed!")
+            exit()
+        else:
+            print("No free games here")
+            return
 
 
 if __name__ == '__main__':

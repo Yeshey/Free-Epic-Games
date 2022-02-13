@@ -22,7 +22,7 @@ Install dependencies:
 
 ### Additionally
 
-+ [Firefox](https://www.mozilla.org/firefox/new/) - You can technically do all of this with Chrome, but it involves some more setup with selenium and particular drivers and I'm just too lazy. This works perfectly fine.
++ [Firefox](https://www.mozilla.org/firefox/new/) - You can technically do all of this with Chrome, there are some minor diferences, and the script isn't prepared for them yet
 + Enter the `EPIC_EMAIL` and `EPIC_PASSWORD` variables in the `.env` file to match your Epic Games Store account. Don't include any quotes here.
 + You may add multiple user accounts using comma separated values, e.g. `EPIC_EMAIL=a@a.com,b@b.com` `EPIC_PASSWORD=pass1,pass2`
 + While the scipt will technically work without 2FA enabled on your epic account, you will likely see many more captchas. In order to avoid this, follow the steps [here](###Two-factor-authentication) to enable 2FA on your account and configure the script to work with your 2FA secret. 

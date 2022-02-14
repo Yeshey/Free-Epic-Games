@@ -6,8 +6,6 @@ import webbrowser
 import pyautogui
 import os
 import time
-import sys          
-import subprocess
 import pyperclip
 import clipboard
 import lxml.html, pyotp, re, sys, time, traceback

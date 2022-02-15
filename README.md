@@ -14,11 +14,9 @@ Inspiered by [Mason Stooksburys](https://github.com/MasonStooksbury)  [bots repo
 
 ## Requirements
 
-First, clone this repo using `git clone https://github.com/Yeshey/Free-Epic-Games.git`. Then,
+First, clone this repo using `git clone https://github.com/Yeshey/Free-Epic-Games.git`. Then,  
 
-Install dependencies:
-  + `pip install pyotp` (for two-factor authentication)
-  + ...?
+Run `pip install -r requirements.txt` to automatically install dependencies
 
 ### Additionally
 

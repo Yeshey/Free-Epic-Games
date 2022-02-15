@@ -63,6 +63,8 @@ def open_browser(whichBrowser=Empty):
             os.system("firefox --private-window " + url)
         #webbrowser.get(whichBrowser).open(freenow)
 
+    # Problem finding images when they're a scalled version of the original image
+
     # javascript that adds an eventlistner that once the page comes into focus, deletes itself and enables fullscreen
     # javaScriptFullScreen = 'document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler); document.body.requestFullscreen(); });'
     # WTF IS THIS TRASH FULLSCREEN?!? CANT EVEN USE CTRL+L

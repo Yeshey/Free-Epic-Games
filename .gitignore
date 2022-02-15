@@ -2,3 +2,5 @@
 *screenshot*
 geckodriver.log
 .env
+*conflict*
+test

@@ -2,6 +2,7 @@
 
 from multiprocessing.connection import wait
 from queue import Empty
+import subprocess
 import webbrowser
 import pyautogui
 import os
@@ -53,7 +54,14 @@ def open_browser(whichBrowser=Empty):
     if (whichBrowser == Empty):
         webbrowser.get().open(freenow)
     else:
-        webbrowser.get(whichBrowser).open(freenow)
+        if sys.platform=='win32':
+            os.system("start firefox --private file://" + ROOT_DIR + "/imgs/FREENOW.png")
+            #subprocess.Popen(['start', freenow], shell= True)
+        elif sys.platform=='darwin':
+            subprocess.Popen(['open', url])
+        else:
+            os.system("firefox --private-window " + url)
+        #webbrowser.get(whichBrowser).open(freenow)
 
     # javascript that adds an eventlistner that once the page comes into focus, deletes itself and enables fullscreen
     # javaScriptFullScreen = 'document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler); document.body.requestFullscreen(); });'
@@ -65,8 +73,12 @@ def open_browser(whichBrowser=Empty):
 
     img = wait_to_see('FREENOW.png', True, 5)
     if img is not None:
+        print("in here")
+        print(img)
         pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
         time.sleep(0.3)
+        pyautogui.write("allow pasting")
+        pyautogui.press ('enter')
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.press ('enter')
         pyautogui.click(img) # because tab needs to be in focus to enter fullscrean
@@ -91,9 +103,9 @@ def wait_to_see(rec_img, moveMouse = True, timeout=20, rec_img2=Empty):
         time_delta = datetime.now() - start_time
         if time_delta.total_seconds() >= timeout:
             print("time limit exceeded")
-            return -1
+            return None
         print(".", end="")
-        img = pyautogui.locateCenterOnScreen('imgs/'+rec_img, grayscale=True, confidence=.7)
+        img = pyautogui.locateCenterOnScreen('./imgs/'+rec_img, grayscale=True, confidence=.7)
         if img is not None:
             break 
         if (rec_img2 != Empty): 
@@ -203,6 +215,7 @@ def claim_free_games():
 
 if __name__ == '__main__':
     for credentials in credentialslist:
+        print (webbrowser._browsers)
         open_browser("firefox")
         log_into_account(*credentials)
         claim_free_games()

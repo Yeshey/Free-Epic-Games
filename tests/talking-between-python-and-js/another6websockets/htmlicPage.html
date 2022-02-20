@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Sockets</title>
+</head>
+<body>
+    <input type="text" placeholder="Type..." id="text">
+    <input type="button" value="submit" onclick="send()">
+    <h1 id='h'></h1>
+    <script>
+        const ws = new WebSocket("ws://127.0.0.1:5678/");
+        var x;
+        var stuff = 'DATA<br /> ';
+        console.log(ws);
+        ws.onmessage = function(event){
+            console.log("[Message received from server]", event.data)
+            stuff += "<br /> msg recv ["+event.data+']';
+            document.getElementById("h").innerHTML=stuff;
+        };
+        function send(){
+            x = document.getElementById("text").value;
+
+            try {
+                ws.send(x);
+            } catch (error) {
+                stuff = '<br/>' + error;
+                document.getElementById("h").innerHTML= stuff;
+            }
+            stuff += "<br />  msg sent ["+x+']'
+            document.getElementById("h").innerHTML= stuff;
+            console.log("Msg sent ", x);
+        }
+    </script>
+</body>
+</html>

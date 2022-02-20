@@ -1,4 +1,3 @@
-#!/usr/bin/python
 
 from multiprocessing.connection import wait
 from queue import Empty
@@ -60,7 +59,7 @@ def open_browser(whichBrowser=Empty):
         elif sys.platform=='darwin':
             subprocess.Popen(['open', url])
         else:
-            os.system("firefox --private-window " + url)
+            os.system("firefox --private file://" + ROOT_DIR + "/imgs/FREENOW.png &")
         #webbrowser.get(whichBrowser).open(freenow)
 
     # Problem finding images when they're a scalled version of the original image
@@ -107,11 +106,11 @@ def wait_to_see(rec_img, moveMouse = True, timeout=20, rec_img2=Empty):
             print("time limit exceeded")
             return None
         print(".", end="")
-        img = pyautogui.locateCenterOnScreen('./imgs/'+rec_img, grayscale=True, confidence=.7)
+        img = pyautogui.locateCenterOnScreen('./imgs/'+rec_img, grayscale=True, confidence=.8)
         if img is not None:
             break 
         if (rec_img2 != Empty): 
-            img = pyautogui.locateCenterOnScreen('imgs/'+rec_img2, grayscale=True, confidence=.7)
+            img = pyautogui.locateCenterOnScreen('imgs/'+rec_img2, grayscale=True, confidence=.8)
             if img is not None:
                 break 
     return img
@@ -126,47 +125,59 @@ def go_to_url(url):
     pyautogui.press ('enter')
 
 def log_into_account(email, password, two_fa_key=None):
-    a = 1
-    while (a > 0):
-        a-=1
-        go_to_url(epic_store_url)
-        img = wait_to_see('LanguageGlobe.png')
-        if img is None:
-            a+=1
+    while (True):
+        a = 1
+        while (a > 0):
+            a-=1
+            go_to_url(epic_store_url)
+            img = wait_to_see('LanguageGlobe.png')
+            if img is None:
+                a+=1
 
-    
-    # Log out if need be
-    img = pyautogui.locateCenterOnScreen('imgs/LogedIn.png', grayscale=True, confidence=.7) 
-    if (img is not None):
-        go_to_url(epic_logout_url)
-    else:
-        img = pyautogui.locateCenterOnScreen('imgs/signIn.png', grayscale=True, confidence=.7)
-        if img is not None:
-            pyautogui.click(img)
+        
+        # Log out if need be
+        img = pyautogui.locateCenterOnScreen('imgs/LogedIn.png', grayscale=True, confidence=.7) 
+        if (img is not None):
+            go_to_url(epic_logout_url)
+        else:
+            img = pyautogui.locateCenterOnScreen('imgs/signIn.png', grayscale=True, confidence=.7)
+            if img is not None:
+                pyautogui.click(img)
 
-    img = wait_to_see("signInWithEpic.png")
-    pyautogui.click(img)
+        img = wait_to_see("signInWithEpic.png")
+        pyautogui.click(img)
 
-    img = wait_to_see("EmailAddress.png")
-    pyautogui.click(img)
+        img = wait_to_see("EmailAddress.png")
+        pyautogui.click(img)
 
-    pyperclip.copy(email)
-    pyautogui.hotkey('ctrl', 'v')
+        pyperclip.copy(email)
+        pyautogui.hotkey('ctrl', 'v')
 
-    pyautogui.press('Tab')
-    pyautogui.write(password)
-    for i in range(0, 4):
         pyautogui.press('Tab')
-    pyautogui.press ('enter')
-
-    img = wait_to_see("EnterTheScurityCodeToContenue.png", True, 10)
-    if (img != -1):
-        for i in range(0, 2):
-            pyautogui.press('Tab')
-        pyautogui.write(pyotp.TOTP(two_fa_key).now())
+        pyautogui.write(password)
         for i in range(0, 4):
             pyautogui.press('Tab')
         pyautogui.press ('enter')
+
+        img = wait_to_see("EnterTheScurityCodeToContenue.png", True, 10)
+        if (img is not None):  
+            for i in range(0, 2):
+                pyautogui.press('Tab')
+            pyautogui.write(pyotp.TOTP(two_fa_key).now())
+            for i in range(0, 4):
+                pyautogui.press('Tab')
+            pyautogui.press ('enter')
+
+        while (True):
+            go_to_url("file://" + ROOT_DIR + "/imgs/FREENOW.png")
+            if (wait_to_see("FREENOW.png") is not None):
+                break
+
+        go_to_url(epic_store_url)
+        img = wait_to_see('LogedIn.png',True, 19)
+        if (img is not None):
+            break
+
 
 def claim_free_games():
     amount_of_free_games = -1

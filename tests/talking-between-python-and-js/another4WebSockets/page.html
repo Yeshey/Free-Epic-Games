@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <h3>
+        Test
+        </h3>
+        <p>
+            <div id="log"></div>
+        </p>
+        <script>
+            // helper function: log message to screen
+            function log(msg) {
+                document.getElementById('log').innerText += msg + '\n';
+            }
+
+            // setup websocket with callbacks
+            var ws = new WebSocket('ws://192.168.0.224:5678/');
+            ws.onopen = function() {
+                log('CONNECT');
+            };
+            ws.onclose = function() {
+                log('DISCONNECT');
+            };
+            ws.onmessage = function(event) {
+                log('MESSAGE: ' + event.data);
+            };
+        </script>
+    </body>
+</html>

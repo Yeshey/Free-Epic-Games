@@ -47,6 +47,12 @@ def wait_to_see(rec_img, moveMouse = True, timeout=20, rec_img2=Empty):
     return img
 
 class GUIBrowser:
+    allow_pasting = False    # todo initialize all these properly in constructor
+    fullscreen = False
+    BodyWidth_to_console = 0
+    computerHeight = 0
+    computerWidth = 0
+
     # constructor
     def __init__(self, whichBrowser=Empty):
         #document.body.requestFullscreen.call(document.body)
@@ -223,14 +229,3 @@ def run_javascript(script_name):
     pyautogui.click(img) # because tab needs to be in focus to enter fullscrean
     pyautogui.press('F12') # close console
 '''
-
-
-
-
-
-
-
-
-
-
-        

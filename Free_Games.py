@@ -1,4 +1,3 @@
-
 from multiprocessing.connection import wait
 from queue import Empty
 import subprocess
@@ -27,25 +26,17 @@ epic_store_url = "https://www.epicgames.com/store/en-US/?lang=en-US"
 epic_login_url = "https://www.epicgames.com/id/login/epic"
 epic_logout_url = 'https://www.epicgames.com/id/logout'
 
-def open_browser(whichBrowser=Empty):
-    '''
-    if (whichBrowser == Empty):
-        if sys.platform=='win32':
-            subprocess.Popen(['start', url], shell= True)
-        elif sys.platform=='darwin':
-            subprocess.Popen(['open', url])
-        else:
-            subprocess.Popen(['xdg-open', url])
-    
-    if (whichBrowser == "firefox"):
-        if sys.platform=='win32':
-            subprocess.Popen(['start', url], shell= True)
-        elif sys.platform=='darwin':
-            subprocess.Popen(['open', url])
-        else:
-            os.system("firefox --private-window " + url)
-    '''
+def run_javascript(script_name):
+    pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
+    time.sleep(0.3)
+    pyautogui.write("allow pasting")
+    pyautogui.press ('enter')
+    pyautogui.hotkey('ctrl', 'v')
+    pyautogui.press ('enter')
+    pyautogui.click(img) # because tab needs to be in focus to enter fullscrean
+    pyautogui.press('F12') # close console
 
+def open_browser(whichBrowser=Empty):
     #document.body.requestFullscreen.call(document.body)
 
     freenow="imgs/FREENOW.png"
@@ -74,8 +65,6 @@ def open_browser(whichBrowser=Empty):
 
     img = wait_to_see('FREENOW.png', True, 5)
     if img is not None:
-        print("in here")
-        print(img)
         pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
         time.sleep(0.3)
         pyautogui.write("allow pasting")
@@ -228,7 +217,7 @@ def claim_free_games():
 
 if __name__ == '__main__':
     for credentials in credentialslist:
-        print (webbrowser._browsers)
+        #print (webbrowser._browsers)
         open_browser("firefox")
         log_into_account(*credentials)
         claim_free_games()

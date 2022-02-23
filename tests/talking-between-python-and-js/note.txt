@@ -1,0 +1,2 @@
+nest to see:
+https://stackoverflow.com/questions/10125881/send-a-message-from-javascript-running-in-a-browser-to-a-windows-batch-file/10126300

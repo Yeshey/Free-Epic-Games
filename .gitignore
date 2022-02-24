@@ -4,3 +4,5 @@ geckodriver.log
 .env
 *conflict*
 test
+tests/MultiScaleTemplateMatching/result.png
+tests/MultiScaleTemplateMatching/result.png

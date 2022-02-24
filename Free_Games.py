@@ -1,4 +1,5 @@
 from multiprocessing.connection import wait
+from pickle import TRUE
 from queue import Empty
 import subprocess
 import webbrowser
@@ -47,9 +48,9 @@ def wait_to_see(rec_img, moveMouse = True, timeout=20, rec_img2=Empty):
     return img
 
 class GUIBrowser:
-    allow_pasting = False    # todo initialize all these properly in constructor
+    allow_pasting = False
     fullscreen = False
-    BodyWidth_to_console = 0
+    bodyCoords_with_console = None
     computerHeight = 0
     computerWidth = 0
 
@@ -67,15 +68,31 @@ class GUIBrowser:
             else:
                 os.system("firefox --private file://" + ROOT_DIR + "/imgs/FREENOW.png &")
             #webbrowser.get(whichBrowser).open("imgs/FREENOW.png")
-        # Problem finding images when they're a scalled version of the original image
-        # javascript that adds an eventlistner that once the page comes into focus, deletes itself and enables fullscreen
-        # javaScriptFullScreen = 'document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler); document.body.requestFullscreen(); });'
-        # WTF IS THIS TRASH FULLSCREEN?!? CANT EVEN USE CTRL+L
+
+        while True:
+            img = wait_to_see('FREENOW.png', True, 5)    
+            if img is not None:
+                break
+            pyautogui.press('F11')
+        self.bodyCoords_with_console = img
+        if (self.run_javascript("IsFullscreen.js") == "NO"):
+            pyautogui.press('F11')
+        # set the true body Coords with console open:
+        pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
+        self.bodyCoords_with_console = wait_to_see('FREENOW.png', True, 5)
+        if img is None:
+            print("something went wrong")
+            exit()
+        pyautogui.press('F12') # close console
+
+        '''
         # javascript that adds an eventlistner that once the page comes into focus, deletes itself and puts in the clipboard if the browser is or not in fullscreen
         javaScriptFullScreen2 = ' document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler);  if(!window.screenTop && !window.screenY){ str = "YES" } else { str = "NO" } navigator.clipboard.writeText(str); });    '
         pyperclip.copy(javaScriptFullScreen2)
         img = wait_to_see('FREENOW.png', True, 5)
         if img is not None:
+            
+            
             pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
             time.sleep(0.3)
             pyautogui.write("allow pasting")
@@ -94,6 +111,29 @@ class GUIBrowser:
         else:
             pyautogui.press('F11')
             time.sleep(1)
+        '''
+
+    def run_javascript(self, script_name):
+        pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
+        time.sleep(0.3)
+        if self.allow_pasting == False:
+            pyautogui.write("allow pasting")
+            self.allow_pasting = True
+        pyautogui.press ('enter')
+        # javascript that adds an eventlistner that once the page comes into focus, deletes itself and puts in the clipboard if the browser is or not in fullscreen
+        pyperclip.copy('document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler); ')
+        pyautogui.hotkey('ctrl', 'v')
+        fo = open("./JSscripts/" + script_name, 'r').read() # opens script and pastes it
+        pyperclip.copy(fo)
+        pyautogui.hotkey('ctrl', 'v')
+        pyperclip.copy('});')
+        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.press ('enter')
+        pyautogui.click(self.bodyCoords_with_console) # because tab needs to be in focus to enter fullscrean
+        pyautogui.press('F12')
+
+        return clipboard.paste()
+
 
     def go_to_url(self, url):
         pyautogui.hotkey('ctrl', 'l')

@@ -1,0 +1,4 @@
+- [Multiscale-Template-Matching Repository](https://github.com/Logeswaran123/Multiscale-Template-Matching)
+- [Reddit question](https://www.reddit.com/r/opencv/comments/b8f4up/question_scale_invariant_template_matching/)
+- [The complete guide to building an image search engine with Python and OpenCV](https://pyimagesearch.com/2014/12/01/complete-guide-building-image-search-engine-python-opencv/)
+- [Stack Overflow - Algorithm for Scale Invariant Template Matching](https://dsp.stackexchange.com/questions/75964/algorithm-for-scale-invariant-template-matching) (check it!)

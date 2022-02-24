@@ -26,7 +26,7 @@ found = None
 
 # loop over the scales of the image
 # np.linspace(size of ending image, size of final image, number of steps)
-for scale in np.linspace(0.7, 1.6, 1000)[::-1]: 
+for scale in np.linspace(0.7, 1.6, 400)[::-1]: 
     # resize the image according to the scale, and keep track
     # of the ratio of the resizing
     resized = imutils.resize(gray, width = int(gray.shape[1] * scale))

@@ -79,16 +79,13 @@ class GUIBrowser:
 
     def go_to_url(self, url):
         pyautogui.hotkey('ctrl', 'l')
-        time.sleep(0.1)
         pyperclip.copy(url)
-        time.sleep(0.1)
         pyautogui.hotkey('ctrl', 'v')
-        time.sleep(0.1)
         pyautogui.press ('enter')
 
     def log_into_account(self, email, password, two_fa_key=None):
         while (True):
-            while (img is None):
+            while (img is None):    
                 self.go_to_url(epic_store_url)
                 img = wait_to_see('LanguageGlobe.png')
 

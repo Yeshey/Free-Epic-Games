@@ -135,21 +135,22 @@ class GUIBrowser:
         amount_of_free_games = -1
 
         while amount_of_free_games != 0:
-            amount_of_free_games-=1
-            #self.go_to_url("file://" + ROOT_DIR + "/imgs/FREENOW.png")
-            #wait_to_see("FREENOW.png")
+            amount_of_free_games -= 1 #
+
             self.go_to_url(epic_store_url)
             wait_to_see('LanguageGlobe.png')
+
             key_to_press = 'space'
-            while True:
+
+            while True: # continues going down the page until it finds "FREENOW.png"
                 img = pyautogui.locateCenterOnScreen('imgs/FREENOW.png', grayscale=True, confidence=.7)
                 if img is not None:
                     imgs_list = list(pyautogui.locateAllOnScreen('imgs/FREENOW.png', grayscale=True, confidence=0.95))
 
-                    if (len(imgs_list) != 0):
-                        if (amount_of_free_games < 0): # only updates one time, then never again
+                    if (amount_of_free_games < 0): # only updates one time, then never again
                             amount_of_free_games = len(imgs_list) - 1 # -1 because we're already in the first iteration
 
+                    if (len(imgs_list) != 0):
                         img = imgs_list[amount_of_free_games - 1]
                         pyautogui.click(x = img.left + (img.width / 2), y = img.top + (img.height / 2))
                         break
@@ -164,13 +165,13 @@ class GUIBrowser:
             img = pyautogui.locateCenterOnScreen('imgs/get.png', grayscale=True, confidence=.7) 
             if img is not None:
                 pyautogui.click(img)
-                img = wait_to_see('PLACE_ORDER.png')
+                img = wait_to_see('PLACE_ORDER.png', True, 20)
                 if img is not None:
                     pyautogui.click(img)
-                    img = wait_to_see('I_Agree.png')
+                    img = wait_to_see('I_Agree.png', True)
                     if img is not None:
                         pyautogui.click(img)
-                        wait_to_see('Thank_u_for_buying.png',True, 7)
+                        wait_to_see('Thank_u_for_buying.png', True, 7)
                         return
                 
                 print("Something changed!")

@@ -53,8 +53,6 @@ class GUIBrowser:
     allow_pasting = False
     fullscreen = False
     bodyCoords_with_console = None
-    computerHeight = 0
-    computerWidth = 0
 
     # constructor
     def __init__(self, whichBrowser=Empty):
@@ -71,70 +69,12 @@ class GUIBrowser:
                 os.system("firefox --private file://" + ROOT_DIR + "/imgs/FREENOW.png &")
             #webbrowser.get(whichBrowser).open("imgs/FREENOW.png")
 
-        while True:
+        pyautogui.press('F11') # fullscreen mode
+
+        while img is None:
             img = wait_to_see('FREENOW.png', True, 5)    
-            if img is not None:
-                break
-            pyautogui.press('F11')
+
         self.bodyCoords_with_console = img
-        if (self.run_javascript("IsFullscreen.js") == "NO"):
-            pyautogui.press('F11')
-        # set the true body Coords with console open:
-        pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
-        self.bodyCoords_with_console = wait_to_see('FREENOW.png', True, 5)
-        if img is None:
-            print("something went wrong")
-            exit()
-        pyautogui.press('F12') # close console
-
-        '''
-        # javascript that adds an eventlistner that once the page comes into focus, deletes itself and puts in the clipboard if the browser is or not in fullscreen
-        javaScriptFullScreen2 = ' document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler);  if(!window.screenTop && !window.screenY){ str = "YES" } else { str = "NO" } navigator.clipboard.writeText(str); });    '
-        pyperclip.copy(javaScriptFullScreen2)
-        img = wait_to_see('FREENOW.png', True, 5)
-        if img is not None:
-            
-            
-            pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
-            time.sleep(0.3)
-            pyautogui.write("allow pasting")
-            pyautogui.press ('enter')
-            pyautogui.hotkey('ctrl', 'v')
-            pyautogui.press ('enter')
-            pyautogui.click(img) # because tab needs to be in focus to enter fullscrean
-            pyautogui.press('F12')
-
-            isFullScreen = clipboard.paste()
-            if (isFullScreen == 'NO'):
-                pyautogui.press('F11')
-            elif (isFullScreen != 'YES'):
-                print("Couldnt determine if fullscreen")
-                exit()
-        else:
-            pyautogui.press('F11')
-            time.sleep(1)
-        '''
-
-    def run_javascript(self, script_name):
-        pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
-        time.sleep(0.3)
-        if self.allow_pasting == False:
-            pyautogui.write("allow pasting")
-            self.allow_pasting = True
-        pyautogui.press ('enter')
-        # javascript that adds an eventlistner that once the page comes into focus, deletes itself and puts in the clipboard if the browser is or not in fullscreen
-        pyperclip.copy('document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler); ')
-        pyautogui.hotkey('ctrl', 'v')
-        fo = open("./JSscripts/" + script_name, 'r').read() # opens script and pastes it
-        pyperclip.copy(fo)
-        pyautogui.hotkey('ctrl', 'v')
-        pyperclip.copy('});')
-        pyautogui.hotkey('ctrl', 'v')
-        pyautogui.press ('enter')
-        pyautogui.click(self.bodyCoords_with_console) # because tab needs to be in focus to enter fullscrean
-        pyautogui.press('F12')
-
-        return clipboard.paste()
 
 
     def go_to_url(self, url):
@@ -148,13 +88,9 @@ class GUIBrowser:
 
     def log_into_account(self, email, password, two_fa_key=None):
         while (True):
-            a = 1
-            while (a > 0):
-                a-=1
+            while (img is None):
                 self.go_to_url(epic_store_url)
                 img = wait_to_see('LanguageGlobe.png')
-                if img is None:
-                    a+=1
 
             
             # Log out if need be
@@ -259,15 +195,3 @@ if __name__ == '__main__':
         #open_browser("firefox")
         #log_into_account(*credentials)
         #claim_free_games()
-
-'''
-def run_javascript(script_name):
-    pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
-    time.sleep(0.3)
-    pyautogui.write("allow pasting")
-    pyautogui.press ('enter')
-    pyautogui.hotkey('ctrl', 'v')
-    pyautogui.press ('enter')
-    pyautogui.click(img) # because tab needs to be in focus to enter fullscrean
-    pyautogui.press('F12') # close console
-'''

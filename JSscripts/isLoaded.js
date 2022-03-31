@@ -6,6 +6,9 @@ if (document.readyState === "complete"){
         navigator.clipboard.writeText("loaded");
     }
 }
+
+
+return document.readyState === 'complete';
 /*
 if (document.readyState === "complete"){
     alert("loaded");

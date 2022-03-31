@@ -85,7 +85,7 @@ class GUIBrowser:
 
     def log_into_account(self, email, password, two_fa_key=None):
         while (True):
-            while (img is None):    
+            while (wait_to_see('LogedIn.png', True, 19) is None):    
                 self.go_to_url(epic_store_url)
                 img = wait_to_see('LanguageGlobe.png')
 
@@ -108,38 +108,36 @@ class GUIBrowser:
             pyperclip.copy(email)
             pyautogui.hotkey('ctrl', 'v')
 
-            pyautogui.press('Tab')
+            pyautogui.press('Tab') # change to password
             pyautogui.write(password)
             for i in range(0, 4):
                 pyautogui.press('Tab')
-            pyautogui.press ('enter')
+
+            pyautogui.press('enter') # press tab 4 times to get to login button
 
             img = wait_to_see("EnterTheScurityCodeToContenue.png", True, 10)
             if (img is not None):  
                 for i in range(0, 2):
                     pyautogui.press('Tab')
                 pyautogui.write(pyotp.TOTP(two_fa_key).now())
+
                 for i in range(0, 4):
                     pyautogui.press('Tab')
-                pyautogui.press ('enter')
+                pyautogui.press('enter')
 
-            while (True):
-                self.go_to_url("file://" + ROOT_DIR + "/imgs/FREENOW.png")
-                if (wait_to_see("FREENOW.png") is not None):
-                    break
+            #while (wait_to_see("FREENOW.png") is None):
+            #    self.go_to_url("file://" + ROOT_DIR + "/imgs/FREENOW.png")
 
             self.go_to_url(epic_store_url)
-            img = wait_to_see('LogedIn.png',True, 19)
-            if (img is not None):
-                break
+
 
     def claim_free_games(self):
         amount_of_free_games = -1
 
         while amount_of_free_games != 0:
             amount_of_free_games-=1
-            self.go_to_url("file://" + ROOT_DIR + "/imgs/FREENOW.png")
-            wait_to_see("FREENOW.png")
+            #self.go_to_url("file://" + ROOT_DIR + "/imgs/FREENOW.png")
+            #wait_to_see("FREENOW.png")
             self.go_to_url(epic_store_url)
             wait_to_see('LanguageGlobe.png')
             key_to_press = 'space'
@@ -147,16 +145,18 @@ class GUIBrowser:
                 img = pyautogui.locateCenterOnScreen('imgs/FREENOW.png', grayscale=True, confidence=.7)
                 if img is not None:
                     imgs_list = list(pyautogui.locateAllOnScreen('imgs/FREENOW.png', grayscale=True, confidence=0.95))
-                    if(len(imgs_list) == 0):
-                        key_to_press = "up"
-                    else:
+
+                    if (len(imgs_list) != 0):
                         if (amount_of_free_games < 0): # only updates one time, then never again
-                            amount_of_free_games = len(imgs_list)-1 # -1 because we're already in the first iteration
-                        img = imgs_list[amount_of_free_games-1]
-                        pyautogui.click(x=img.left+(img.width/2), y=img.top+(img.height/2))
+                            amount_of_free_games = len(imgs_list) - 1 # -1 because we're already in the first iteration
+
+                        img = imgs_list[amount_of_free_games - 1]
+                        pyautogui.click(x = img.left + (img.width / 2), y = img.top + (img.height / 2))
                         break
 
-                pyautogui.press (key_to_press)
+                    key_to_press = "up"
+
+                pyautogui.press(key_to_press)
                 
             # wait to see in_library.png or get.png
             img = wait_to_see('get.png', True, 20, 'IN_LIBRARY.png')

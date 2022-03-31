@@ -30,22 +30,24 @@ epic_logout_url = 'https://www.epicgames.com/id/logout'
 def wait_to_see(rec_img, moveMouse = True, timeout=20, rec_img2=Empty):
     if (moveMouse == True):
         pyautogui.moveTo(1,1)
+
     print("looking for",rec_img, end="")
     start_time = datetime.now()
+
     while True:
         time_delta = datetime.now() - start_time
         if time_delta.total_seconds() >= timeout:
             print("time limit exceeded")
             return None
+
         print(".", end="")
+
         img = pyautogui.locateCenterOnScreen('./imgs/'+rec_img, grayscale=True, confidence=.8)
-        if img is not None:
-            break 
-        if (rec_img2 != Empty): 
-            img = pyautogui.locateCenterOnScreen('imgs/'+rec_img2, grayscale=True, confidence=.8)
-            if img is not None:
-                break 
-    return img
+        if img is None:
+            if (rec_img2 != Empty):
+                img = pyautogui.locateCenterOnScreen('imgs/'+rec_img2, grayscale=True, confidence=.8)
+        
+        return img
 
 class GUIBrowser:
     allow_pasting = False

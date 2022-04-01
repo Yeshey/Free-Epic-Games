@@ -3,6 +3,15 @@
 
 from os import getenv
 from dotenv import load_dotenv
+<<<<<<< Updated upstream
+=======
+
+ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__)))
+
+# SEE THIS NEXT: https://stackoverflow.com/questions/27343997/using-pil-python-image-library-to-detect-image-on-screen
+# FOR IMAGE DETECTION
+
+>>>>>>> Stashed changes
 load_dotenv()
 
 # Pull credentials from .env, then transpose the matrix.
@@ -10,8 +19,45 @@ load_dotenv()
 a = [getenv("EPIC_EMAIL").split(","), getenv("EPIC_PASSWORD").split(","), getenv("EPIC_TFA_TOKEN").split(",")]
 credentialslist = [[a[j if len(str(j)) > 0 else None][i if len(str(i)) > 0 else None] for j in range(len(a))] for i in range(len(a[0]))]
 
+<<<<<<< Updated upstream
 # You may desire to replace the user-agent below. You can leave it as is or google 'what is my user agent' and copy that between the single quotes below
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36"
+=======
+# wait for a page to load: https://stackoverflow.com/questions/49807107/how-to-wait-for-the-page-to-fully-load-using-webbrowser-method
+
+epic_home_url = "https://www.epicgames.com/site/en-US/home"
+epic_store_url = "https://www.epicgames.com/store/en-US/?lang=en-US"
+epic_login_url = "https://www.epicgames.com/id/login/epic"
+epic_logout_url = 'https://www.epicgames.com/id/logout'
+
+def wait_to_see(rec_img, moveMouse = True, timeout=20, rec_img2=Empty):
+    if (moveMouse == True):
+        pyautogui.moveTo(1,1)
+    print("looking for",rec_img, end="")
+    start_time = datetime.now()
+    while True:
+        time_delta = datetime.now() - start_time
+        if time_delta.total_seconds() >= timeout:
+            print("time limit exceeded")
+            return None
+        print(".", end="")
+        img = pyautogui.locateCenterOnScreen('./imgs/'+rec_img, grayscale=True, confidence=.8)
+        if img is not None:
+            break 
+        if (rec_img2 != Empty): 
+            img = pyautogui.locateCenterOnScreen('imgs/'+rec_img2, grayscale=True, confidence=.8)
+            if img is not None:
+                break 
+    return img
+
+class GUIBrowser:
+    allow_pasting = False
+    fullscreen = False
+    console_open = False
+    bodyCoords_with_console = None
+    computerHeight = 0
+    computerWidth = 0
+>>>>>>> Stashed changes
 
 import lxml.html, pyotp, re, sys, time, traceback
 from bs4 import BeautifulSoup
@@ -99,6 +145,30 @@ def getGame():
                 
             if wait_until_xpath_visible("//*[contains(text(), 'Thank you for buying') or contains(text(), 'Got Epic Games')]", 1):
                 break
+<<<<<<< Updated upstream
+=======
+            pyautogui.press('F11')
+        self.bodyCoords_with_console = img
+        if (self.run_javascript("IsFullscreen.js") == "NO"):
+            pyautogui.press('F11')
+        # set the true body Coords with console open:
+        pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
+        self.bodyCoords_with_console = wait_to_see('FREENOW.png', True, 5)
+        if img is None:
+            print("something went wrong")
+            exit()
+        pyautogui.press('F12') # close console
+
+        #print("zoom level: " + self.run_javascript("zoomLevel.js"))
+
+        '''
+        # javascript that adds an eventlistner that once the page comes into focus, deletes itself and puts in the clipboard if the browser is or not in fullscreen
+        javaScriptFullScreen2 = ' document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler);  if(!window.screenTop && !window.screenY){ str = "YES" } else { str = "NO" } navigator.clipboard.writeText(str); });    '
+        pyperclip.copy(javaScriptFullScreen2)
+        img = wait_to_see('FREENOW.png', True, 5)
+        if img is not None:
+            
+>>>>>>> Stashed changes
             
             time.sleep(1)
             wait_redirect_count += 1

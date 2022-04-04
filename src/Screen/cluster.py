@@ -26,14 +26,10 @@ class Cluster:
         self.matches.append(matchInScreenIndex)
 
     def addToClusterIfBelongs(self, matchInScreenIndex,list_kp2):
-        #print(list_kp2[matchInScreenIndex], self.center, self.height/2)
-        #print((list_kp2[matchInScreenIndex][0] > (self.center[0] - self.width/2)), end=" ")
-        #print((list_kp2[matchInScreenIndex][0] < (self.center[0] + self.width/2)), end=" ")
-        #print((list_kp2[matchInScreenIndex][1] > (self.center[1] - self.height/2)), end=" ")
-        #print((list_kp2[matchInScreenIndex][1] < (self.center[1] + self.height/2)), end=" ")
-        if (    (list_kp2[matchInScreenIndex][0] > (self.center[0] - self.width/2)) and (list_kp2[matchInScreenIndex][0] < (self.center[0] + self.width/2)) 
+        # *1 makes it so the cluster is twice the size as the original image (*0.5 would make them the same size)
+        if (    (list_kp2[matchInScreenIndex][0] > (self.center[0] - self.width*1)) and (list_kp2[matchInScreenIndex][0] < (self.center[0] + self.width*1)) 
                 and
-                (list_kp2[matchInScreenIndex][1] > (self.center[1] - self.height/2)) and (list_kp2[matchInScreenIndex][1] < (self.center[1] + self.height/2)) 
+                (list_kp2[matchInScreenIndex][1] > (self.center[1] - self.height*1)) and (list_kp2[matchInScreenIndex][1] < (self.center[1] + self.height*1)) 
             ):
             self.matches.append(matchInScreenIndex)
             #increase cluster size

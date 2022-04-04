@@ -54,21 +54,11 @@ draw_params = dict(matchColor = (0,255,0),
 
 img3 = cv.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
 
-#plt.imshow(img3,),plt.show()
-
-
-
-# https://stackoverflow.com/questions/41504686/opencv-attributeerror-list-object-has-no-attribute-queryidx
-#good = []
-#for m,n in matches :
-#    if m.distance < 0.7*n.distance :
-#        good.append(m)
-
 # Initialize lists
 templateMatches = []
 sceneMatches = []
 
-# For each match...
+# For each match find the coordinates
 for mat in good:
     # Get the matching keypoints for each of the images
     img1_idx = mat.queryIdx
@@ -84,39 +74,17 @@ for mat in good:
     templateMatches.append((x1, y1))
     sceneMatches.append((x2, y2))
 
-#diferencex = sceneMatches[0][0] - templateMatches[0][0]
-#diferencey = sceneMatches[0][1] - templateMatches[0][1]
-
 # they're in order match for match
 print("templateMatches")
 print(templateMatches)
 print("sceneMatches")
 print(sceneMatches)
 
-#for stuff in sceneMatches:
-#    print(stuff[0] - diferencex, end = " ")
-#    print(stuff[1] - diferencey, end = " ")
-
-
 #looking for clusters:
 clusters = []
 print("len =" + str(len(sceneMatches)))
 for matchInScreenIndex in range(0,len(sceneMatches)):
-    '''if (addToACluster(clusters, matchInScreenIndex,sceneMatches) == False):
-        # cluster: [[[center],[height],[width]],[all the matches in it]]
-        print("+",end=" ")
-        boy = Cluster(templateMatches,sceneMatches,matchInScreenIndex,templateWidth, templateHeight)
-        clusters.append(boy)
-        print("cluster created!")
-    else: 
-        print("=",end=" ")
-    print("--------------------")
-    for cluster in clusters:
-        print(cluster)
-    print("--------------------")'''
-
     if all(cluster.addToClusterIfBelongs(matchInScreenIndex,sceneMatches) == False for cluster in clusters):        
-        # cluster: [[[center],[height],[width]],[all the matches in it]]
         clusters.append(Cluster(templateMatches,sceneMatches,matchInScreenIndex,templateWidth, templateHeight))
 
 for cluster in clusters:
@@ -132,18 +100,4 @@ for i in range(0,len(clusters)):
 zoomer = biggestCluster.medianPoint(sceneMatches)
 pyautogui.click(zoomer[0],zoomer[1])
 
-
 plt.imshow(img3,),plt.show()
-
-'''
-# clicking in median point
-xSum = 0
-ySum = 0
-for matchInScreen in sceneMatches:
-    xSum += matchInScreen[0]
-    ySum += matchInScreen[1]
-xMedian = xSum/len(sceneMatches)
-yMedian = ySum/len(sceneMatches)
-pyautogui.click(x=xMedian, y=yMedian)
-'''
-

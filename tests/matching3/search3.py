@@ -8,7 +8,6 @@ from PIL import ImageGrab
 import pyautogui
 
 class Cluster:
-
     # constructor
     def __init__(self, templateMatches,sceneMatches,matchInScreenIndex,templateWidth, templateHeight):
         # knowing that (0,0) is top left of image, and as we go down and right, x and y increase
@@ -87,10 +86,9 @@ def addToACluster(clusters, matchInScreenIndex,list_kp2):
 im = ImageGrab.grab()
 im.save("screenshot.png", "PNG")
 
-img1 = cv.imread('FREENOW1.png',cv.IMREAD_GRAYSCALE)          # queryImage
+img1 = cv.imread('FREENOW1.png',cv.IMREAD_GRAYSCALE) # queryImage
 img2 = cv.imread('screenshot.png',cv.IMREAD_GRAYSCALE) # trainImage
 
-# https://note.nkmk.me/en/python-opencv-pillow-image-size/
 templateWidth = img1.shape[1] # get width and height of the template
 templateHeight = img1.shape[0]
 
@@ -104,7 +102,7 @@ kp2, des2 = sift.detectAndCompute(img2,None)
 # FLANN parameters
 FLANN_INDEX_KDTREE = 1
 index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
-search_params = dict(checks=50)   # or pass empty dictionary
+search_params = dict(checks=50) # or pass empty dictionary
 
 flann = cv.FlannBasedMatcher(index_params,search_params)
 

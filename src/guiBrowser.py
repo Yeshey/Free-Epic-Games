@@ -72,7 +72,7 @@ class GUIBrowser:
             pyautogui.press('F11')
         # set the true body Coords with console open:
         pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
-        self.bodyCoords_with_console = Screen.wait_to_see('FREENOW.png', True, 5)
+        self.bodyCoords_with_console = Screen.wait_to_see('FREENOW.png', moveMouse = True, timeout=5)
         if img is None:
             print("something went wrong")
             exit()
@@ -111,23 +111,21 @@ class GUIBrowser:
 
     def log_into_account(self, email, password, two_fa_key=None):
         while (True):
-            a = 1
-            while (a > 0):
-                a-=1
-                self.go_to_url(epic_store_url)
-                img = Screen.wait_to_see('LanguageGlobe.png')
-                if img is None:
-                    a+=1
+            self.go_to_url(epic_logout_url)
+            '''
+            self.go_to_url(epic_store_url)
+            img = Screen.wait_to_see('LanguageGlobe.png')
             
             # Log out if need be
-            #img = Screen.find(config.IMGS_FLDR+'LogedIn.png')
-            img = pyautogui.locateCenterOnScreen(config.IMGS_FLDR+'LogedIn.png', grayscale=True, confidence=.7) 
+            img = Screen.find(config.IMGS_FLDR+'LogedIn.png')
+            #img = pyautogui.locateCenterOnScreen(config.IMGS_FLDR+'LogedIn.png', grayscale=True, confidence=.7) 
             if (img is not None):
                 self.go_to_url(epic_logout_url)
             else:
-                img = pyautogui.locateCenterOnScreen(config.IMGS_FLDR+'signIn.png', grayscale=True, confidence=.7)
+                img = Screen.find(config.IMGS_FLDR+'signIn.png')
+                #img = pyautogui.locateCenterOnScreen(config.IMGS_FLDR+'signIn.png', grayscale=True, confidence=.7)
                 if img is not None:
-                    pyautogui.click(img)
+                    pyautogui.click(img)'''
 
             img = Screen.wait_to_see("signInWithEpic.png")
             pyautogui.click(img)
@@ -145,7 +143,7 @@ class GUIBrowser:
                 pyautogui.press('Tab')
             pyautogui.press ('enter')
 
-            img = Screen.wait_to_see("EnterTheScurityCodeToContenue.png", moveMouse= True, timeout= 10)
+            img = Screen.wait_to_see("EnterTheScurityCodeToContenue.png", moveMouse= True, timeout= 10, minimumMatches=6)
             if (img is not None):  
                 for i in range(0, 2):
                     pyautogui.press('Tab')
@@ -174,7 +172,13 @@ class GUIBrowser:
             self.go_to_url(epic_store_url)
             Screen.wait_to_see('LanguageGlobe.png')
             key_to_press = 'space'
+            start_time = datetime.now()
             while True:
+                time_delta = datetime.now() - start_time
+                if time_delta.total_seconds() >= 10:
+                    print("time limit exceeded")
+                    start_time = datetime.now()
+                    self.go_to_url(epic_store_url)
                 img = pyautogui.locateCenterOnScreen(config.IMGS_FLDR+'FREENOW.png', grayscale=True, confidence=.7)
                 if img is not None:
                     imgs_list = list(pyautogui.locateAllOnScreen(config.IMGS_FLDR+'FREENOW.png', grayscale=True, confidence=0.95))
@@ -186,7 +190,6 @@ class GUIBrowser:
                         img = imgs_list[amount_of_free_games-1]
                         pyautogui.click(x=img.left+(img.width/2), y=img.top+(img.height/2))
                         break
-
                 pyautogui.press (key_to_press)
                 
             # wait to see in_library.png or get.png

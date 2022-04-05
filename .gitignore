@@ -7,3 +7,4 @@ test
 tests/MultiScaleTemplateMatching/result.png
 tests/MultiScaleTemplateMatching/result.png
 *.tmp
+*pycache*

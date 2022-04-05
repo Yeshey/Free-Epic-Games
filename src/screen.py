@@ -13,6 +13,7 @@ from src.cluster import Cluster # my class
 import config #my config
 
 class Screen:
+    sceneHeigh = 1
     #def __init__():
     @classmethod
     def find(self, imageToFind, minimumMatches=3 ,show=False):
@@ -26,6 +27,8 @@ class Screen:
 
             templateWidth = img1.shape[1] # get width and height of the template
             templateHeight = img1.shape[0]
+
+            self.sceneHeigh = img2.shape[0]
 
             # Initiate SIFT detector
             sift = cv.SIFT_create()
@@ -44,7 +47,7 @@ class Screen:
             if(des1 is not None and len(des1)>2 and des2 is not None and len(des2)>2):
                 matches = flann.knnMatch(des1,des2,k=2)
             else:
-                print ("analysis error AAAAAAAAAAAAAAAAAAAAA", end="") # https://stackoverflow.com/questions/52096625/opencv-error-while-feature-matching-with-flann
+                print ("analysis error", end="") # https://stackoverflow.com/questions/52096625/opencv-error-while-feature-matching-with-flann
                 continue
 
             # Need to draw only good matches, so create a mask
@@ -109,11 +112,11 @@ class Screen:
             else:
                 return None
 
-    #@classmethod
-    def wait_to_see(inimg1, inimg2=None, moveMouse = True, timeout=20, minimumMatches=3):
+    @classmethod
+    def wait_to_see(self,inimg1, inimg2=None, moveMouse = True, timeout=20, minimumMatches=3):
         time.sleep(0.5)
         if (moveMouse == True):
-            pyautogui.moveTo(1,1)
+            pyautogui.moveTo(1,self.sceneHeigh/2)
         print("looking for",inimg1, end="")
         start_time = datetime.now()
         while True:

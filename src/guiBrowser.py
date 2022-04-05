@@ -3,6 +3,7 @@ from pickle import TRUE
 from queue import Empty
 import subprocess
 import webbrowser
+from xml.dom import minicompat
 import pyautogui
 import os
 import time
@@ -55,7 +56,7 @@ class GUIBrowser:
             webbrowser.get().open(config.IMGS_FLDR+"FREENOW.png")
         else:
             if sys.platform=='win32':
-                os.system("start firefox --private file://" + ROOT_DIR + "/" + IMGS_FLDR + "/FREENOW.png")
+                os.system("start firefox --private file://" + config.ROOT_DIR + "/imgs/FREENOW.png")
                 #subprocess.Popen(['start', freenow], shell= True)
             elif sys.platform=='darwin':
                 subprocess.Popen(['open', url])
@@ -127,7 +128,7 @@ class GUIBrowser:
                 if img is not None:
                     pyautogui.click(img)'''
 
-            img = Screen.wait_to_see("signInWithEpic.png")
+            img = Screen.wait_to_see("signInWithEpic.png", minimumMatches=9)
             pyautogui.click(img)
             print(img)
 
@@ -143,7 +144,7 @@ class GUIBrowser:
                 pyautogui.press('Tab')
             pyautogui.press ('enter')
 
-            img = Screen.wait_to_see("EnterTheScurityCodeToContenue.png", moveMouse= True, timeout= 10, minimumMatches=6)
+            img = Screen.wait_to_see("EnterTheScurityCodeToContenue.png", moveMouse= True, timeout= 10, minimumMatches=9)
             if (img is not None):  
                 for i in range(0, 2):
                     pyautogui.press('Tab')
@@ -170,26 +171,36 @@ class GUIBrowser:
             self.go_to_url("file://" + config.ROOT_DIR + "/imgs/FREENOW.png")
             Screen.wait_to_see("FREENOW.png")
             self.go_to_url(epic_store_url)
-            Screen.wait_to_see('LanguageGlobe.png')
+            Screen.wait_to_see('LanguageGlobe.png', timeout=7)
             key_to_press = 'space'
             start_time = datetime.now()
+            timeout = 15
             while True:
                 time_delta = datetime.now() - start_time
-                if time_delta.total_seconds() >= 10:
+                if time_delta.total_seconds() >= timeout:
                     print("time limit exceeded")
                     start_time = datetime.now()
                     self.go_to_url(epic_store_url)
-                img = pyautogui.locateCenterOnScreen(config.IMGS_FLDR+'FREENOW.png', grayscale=True, confidence=.7)
+                    Screen.wait_to_see('LanguageGlobe.png', timeout=7)
+                    timeout = 35
+                    key_to_press="down"
+                #img = pyautogui.locateCenterOnScreen(config.IMGS_FLDR+'FREENOW.png', grayscale=True, confidence=.7)
+                img = Screen.find(config.IMGS_FLDR+'FREENOW.png',minimumMatches=5,show=True)
                 if img is not None:
-                    imgs_list = list(pyautogui.locateAllOnScreen(config.IMGS_FLDR+'FREENOW.png', grayscale=True, confidence=0.95))
-                    if(len(imgs_list) == 0):
+                    img = Screen.find(config.IMGS_FLDR+'FREENOW.png',minimumMatches=5,show=True)
+                    if (img is not None):
+                        pyautogui.click(img)
+                        break
+                    #imgs_list = list(pyautogui.locateAllOnScreen(config.IMGS_FLDR+'FREENOW.png', grayscale=True, confidence=0.95))
+                    
+                    '''if(len(imgs_list) == 0):
                         key_to_press = "up"
                     else:
                         if (amount_of_free_games < 0): # only updates one time, then never again
                             amount_of_free_games = len(imgs_list)-1 # -1 because we're already in the first iteration
                         img = imgs_list[amount_of_free_games-1]
                         pyautogui.click(x=img.left+(img.width/2), y=img.top+(img.height/2))
-                        break
+                        break'''
                 pyautogui.press (key_to_press)
                 
             # wait to see in_library.png or get.png

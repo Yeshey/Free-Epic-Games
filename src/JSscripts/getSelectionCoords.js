@@ -14,4 +14,4 @@ if (sel.rangeCount) {
         }
     }
 }
-navigator.clipboard.writeText(result);
+navigator.clipboard.writeText(result);  

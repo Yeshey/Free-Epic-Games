@@ -4,10 +4,11 @@ from queue import Empty
 import subprocess
 import webbrowser
 from xml.dom import minicompat
+from aqt import TR
 import pyautogui
 import os
 import time
-import pyperclip
+import pyclip
 import clipboard
 import lxml.html, pyotp, re, sys, time, traceback
 import tempfile
@@ -70,6 +71,7 @@ class GUIBrowser:
                 break
             pyautogui.press('F11')
         self.bodyCoords_with_console = img
+
         if (self.run_javascript("IsFullscreen.js") == "NO"):
             pyautogui.press('F11')
         # set the true body Coords with console open:
@@ -81,33 +83,36 @@ class GUIBrowser:
         pyautogui.press('F12') # close console
 
     def run_javascript(self, script_name):
-        if (not self.console_open):
-            pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
+        pyautogui.hotkey('ctrl', 'shift', 'k') # opens or focuses console in firefox
         time.sleep(0.3)
         if self.allow_pasting == False:
             pyautogui.write("allow pasting")
             self.allow_pasting = True
-        pyautogui.press ('enter')
+            pyautogui.press ('enter')
         # javascript that adds an eventlistner that once the page comes into focus, deletes itself and puts in the clipboard if the browser is or not in fullscreen
-        pyperclip.copy('document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler); ')
+        pyclip.copy('document.addEventListener("focus", function handler(e) { e.currentTarget.removeEventListener(e.type, handler); ')
         pyautogui.hotkey('ctrl', 'v')
         fo = open("./src/JSscripts/" + script_name, 'r').read() # opens script and pastes it
-        pyperclip.copy(fo)
+        pyclip.copy(fo)
         pyautogui.hotkey('ctrl', 'v')
-        pyperclip.copy('});')
+        pyclip.copy('});')
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.press ('enter')
-        pyautogui.click(self.bodyCoords_with_console) # because tab needs to be in focus to copy to clipboard
+        self.focus_site()
         if (not self.console_open):
             pyautogui.press('F12')
+        
+        time.sleep(0.1)
 
-        return clipboard.paste()
+        result = str(pyclip.paste())[2:-1] # transforms <'NO'> in <NO>
 
-    def findTextCoords(self, text, wordNumber=1):
-        if (not self.console_open):
-            pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
+        return result 
+
+    def clickTextCoords(self, text, wordNumber=1):
+        self.focus_site()
+        time.sleep(3)
         pyautogui.hotkey('ctrl', 'f')
-        for i in range(1,wordNumber):
+        for i in range(0,wordNumber):
             pyautogui.press('enter')    
         pyautogui.write(text)
         pyautogui.press('esc')
@@ -117,20 +122,31 @@ class GUIBrowser:
         results = coords.split()
         results = list(map(float, results))
 
+        self.open_console()
+        pyautogui.click(results)
+
         if (not self.console_open):
-            pyautogui.press('F12')
+            self.close_console()
 
         return results
-
 
     def go_to_url(self, url):
         pyautogui.hotkey('ctrl', 'l')
         time.sleep(0.1)
-        pyperclip.copy(url)
+        pyclip.copy(url)
         time.sleep(0.1)
         pyautogui.hotkey('ctrl', 'v')
         time.sleep(0.1)
         pyautogui.press ('enter')
+
+    def waitForSiteToLoad(self):
+        time.sleep(4)
+        while (True):
+            if (self.run_javascript("isLoaded.js") == "loaded"):
+                break
+            time.sleep(1)
+            print("here")
+
 
     def log_into_account(self, email, password, two_fa_key=None):
         while (True):
@@ -157,7 +173,7 @@ class GUIBrowser:
             img = Screen.wait_to_see("EmailAddress.png")
             pyautogui.click(img)
 
-            pyperclip.copy(email)
+            pyclip.copy(email)
             pyautogui.hotkey('ctrl', 'v')
 
             pyautogui.press('Tab')
@@ -186,17 +202,39 @@ class GUIBrowser:
             if (img is not None):
                 break
 
+    def open_console(self):
+        if (self.console_open == False):
+            pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox and focuses it
+            self.console_open = True
+
+    def close_console(self):
+        if (self.console_open == True):
+            pyautogui.press('F12') # close console
+            self.console_open = False
+
+    def focus_console(self):
+        pyautogui.hotkey('ctrl', 'shift', 'k')
+
+    def focus_site(self):
+        pyautogui.click(5, pyautogui.size()[1]/2)
+
+        #time.sleep(1)
+        #pyautogui.click(self.bodyCoords_with_console, button='right')
+        #time.sleep(1)
+        #pyautogui.click(self.bodyCoords_with_console[0]-3, self.bodyCoords_with_console[1]-3) # because tab needs to be in focus to copy to clipboard
+        #time.sleep(1)
+
     def claim_free_games(self):
         amount_of_free_games = -1
 
         while amount_of_free_games != 0:
             amount_of_free_games-=1
-            self.go_to_url("file://" + config.ROOT_DIR + "/imgs/FREENOW.png")
-            Screen.wait_to_see("FREENOW.png")
-            self.go_to_url(epic_store_url)
+            #self.go_to_url("file://" + config.ROOT_DIR + "/imgs/FREENOW.png")
+            #Screen.wait_to_see("FREENOW.png")
+            #self.go_to_url(epic_store_url)
             #Screen.wait_to_see('LanguageGlobe.png', timeout=10)
 
-            time.sleep(8)
+            #time.sleep(8)
 
             pyautogui.hotkey('ctrl', 'f')
             pyautogui.write("free now")
@@ -239,22 +277,22 @@ class GUIBrowser:
                 pyautogui.press (key_to_press)
             '''
 
-            time.sleep(5)
+            self.waitForSiteToLoad()
 
-            self.console_open = True
-            pyautogui.hotkey('ctrl', 'shift', 'k')
+            #self.console_open = True
+            #pyautogui.hotkey('ctrl', 'shift', 'k')
 
-            coords = self.findTextCoords("GET")
+            coords = self.clickTextCoords("GET")
             print(coords)
-            pyautogui.click(coords)
+            #pyautogui.click(coords)
 
             time.sleep(1)
-            coords = self.findTextCoords("Place Order", 3)
-            pyautogui.click(coords)
+            coords = self.clickTextCoords("Place Order", 3)
+            #pyautogui.click(coords)
 
             time.sleep(1)
-            coords = self.findTextCoords("I agree", 3)
-            pyautogui.click(coords)
+            coords = self.clickTextCoords("I agree", 3)
+            #pyautogui.click(coords)
 
             return
             '''# wait to see in_library.png or get.png

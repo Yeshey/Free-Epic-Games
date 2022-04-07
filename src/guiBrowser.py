@@ -48,6 +48,7 @@ class GUIBrowser:
     bodyCoords_with_console = None
     computerHeight = 0
     computerWidth = 0
+    console_open = False
 
     # constructor
     def __init__(self, whichBrowser=Empty):
@@ -80,7 +81,8 @@ class GUIBrowser:
         pyautogui.press('F12') # close console
 
     def run_javascript(self, script_name):
-        pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
+        if (not self.console_open):
+            pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
         time.sleep(0.3)
         if self.allow_pasting == False:
             pyautogui.write("allow pasting")
@@ -95,10 +97,30 @@ class GUIBrowser:
         pyperclip.copy('});')
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.press ('enter')
-        pyautogui.click(self.bodyCoords_with_console) # because tab needs to be in focus to enter fullscrean
-        pyautogui.press('F12')
+        pyautogui.click(self.bodyCoords_with_console) # because tab needs to be in focus to copy to clipboard
+        if (not self.console_open):
+            pyautogui.press('F12')
 
         return clipboard.paste()
+
+    def findTextCoords(self, text, wordNumber=1):
+        if (not self.console_open):
+            pyautogui.hotkey('ctrl', 'shift', 'k') # open console in firefox
+        pyautogui.hotkey('ctrl', 'f')
+        for i in range(1,wordNumber):
+            pyautogui.press('enter')    
+        pyautogui.write(text)
+        pyautogui.press('esc')
+
+        coords = self.run_javascript("getSelectionCoords.js")
+
+        results = coords.split()
+        results = list(map(float, results))
+
+        if (not self.console_open):
+            pyautogui.press('F12')
+
+        return results
 
 
     def go_to_url(self, url):
@@ -144,7 +166,8 @@ class GUIBrowser:
                 pyautogui.press('Tab')
             pyautogui.press ('enter')
 
-            img = Screen.wait_to_see("EnterTheScurityCodeToContenue.png", moveMouse= True, timeout= 10, minimumMatches=9)
+            #img = Screen.wait_to_see("EnterTheScurityCodeToContenue.png", moveMouse= True, timeout= 10, minimumMatches=9)
+            time.sleep(4)
             if (img is not None):  
                 for i in range(0, 2):
                     pyautogui.press('Tab')
@@ -171,7 +194,28 @@ class GUIBrowser:
             self.go_to_url("file://" + config.ROOT_DIR + "/imgs/FREENOW.png")
             Screen.wait_to_see("FREENOW.png")
             self.go_to_url(epic_store_url)
-            Screen.wait_to_see('LanguageGlobe.png', timeout=7)
+            #Screen.wait_to_see('LanguageGlobe.png', timeout=10)
+
+            time.sleep(8)
+
+            pyautogui.hotkey('ctrl', 'f')
+            pyautogui.write("free now")
+            pyautogui.press('esc')
+
+            color = (0, 120, 242)
+            s = pyautogui.screenshot()
+
+            for x, y in ((w1, w2) for w1 in range(s.width) for w2 in range(s.height)):
+                if s.getpixel((x, y)) == color:
+                    pyautogui.click(x, y) 
+                    break
+
+            '''for x in range(s.width):
+                for y in range(s.height):
+                    if s.getpixel((x, y)) == color:
+                        pyautogui.click(x, y)  # do something here
+                        exit()'''
+            '''
             key_to_press = 'space'
             start_time = datetime.now()
             timeout = 15
@@ -185,28 +229,38 @@ class GUIBrowser:
                     timeout = 35
                     key_to_press="down"
                 #img = pyautogui.locateCenterOnScreen(config.IMGS_FLDR+'FREENOW.png', grayscale=True, confidence=.7)
-                img = Screen.find(config.IMGS_FLDR+'FREENOW.png',minimumMatches=5,show=True)
+                img = Screen.find(config.IMGS_FLDR+'FREENOW.png',minimumMatches=5,show=False)
                 if img is not None:
-                    img = Screen.find(config.IMGS_FLDR+'FREENOW.png',minimumMatches=5,show=True)
+                    img = Screen.find(config.IMGS_FLDR+'FREENOW.png',minimumMatches=5,show=False)
                     if (img is not None):
                         pyautogui.click(img)
                         break
                     #imgs_list = list(pyautogui.locateAllOnScreen(config.IMGS_FLDR+'FREENOW.png', grayscale=True, confidence=0.95))
-                    
-                    '''if(len(imgs_list) == 0):
-                        key_to_press = "up"
-                    else:
-                        if (amount_of_free_games < 0): # only updates one time, then never again
-                            amount_of_free_games = len(imgs_list)-1 # -1 because we're already in the first iteration
-                        img = imgs_list[amount_of_free_games-1]
-                        pyautogui.click(x=img.left+(img.width/2), y=img.top+(img.height/2))
-                        break'''
                 pyautogui.press (key_to_press)
-                
-            # wait to see in_library.png or get.png
-            img = Screen.wait_to_see('get.png', 'IN_LIBRARY.png', moveMouse= True, timeout= 20)
+            '''
 
-            img = pyautogui.locateCenterOnScreen(config.IMGS_FLDR+'get.png', grayscale=True, confidence=.7) 
+            time.sleep(5)
+
+            self.console_open = True
+            pyautogui.hotkey('ctrl', 'shift', 'k')
+
+            coords = self.findTextCoords("GET")
+            print(coords)
+            pyautogui.click(coords)
+
+            time.sleep(1)
+            coords = self.findTextCoords("Place Order", 3)
+            pyautogui.click(coords)
+
+            time.sleep(1)
+            coords = self.findTextCoords("I agree", 3)
+            pyautogui.click(coords)
+
+            return
+            '''# wait to see in_library.png or get.png
+            img = Screen.wait_to_see('get.png', 'IN_LIBRARY.png', moveMouse= True, timeout= 20, show=False)
+
+            img = Screen.wait_to_see('get.png', 'IN_LIBRARY.png', moveMouse= True, timeout= 20, show = True)
             if img is not None:
                 pyautogui.click(img)
                 img = Screen.wait_to_see('PLACE_ORDER.png')
@@ -222,4 +276,4 @@ class GUIBrowser:
                 exit()
             else:
                 print("No free games here")
-                return
+                return'''

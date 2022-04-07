@@ -113,7 +113,7 @@ class Screen:
                 return None
 
     @classmethod
-    def wait_to_see(self,inimg1, inimg2=None, moveMouse = True, timeout=20, minimumMatches=3):
+    def wait_to_see(self,inimg1, inimg2=None, moveMouse = True, timeout=20, minimumMatches=3, show = False):
         time.sleep(0.5)
         if (moveMouse == True):
             pyautogui.moveTo(1,self.sceneHeigh/2)
@@ -126,7 +126,7 @@ class Screen:
                 return None
             print(".", end="")
 
-            img = Screen.find(config.IMGS_FLDR+inimg1, minimumMatches, show=False)
+            img = Screen.find(config.IMGS_FLDR+inimg1, minimumMatches, show)
             #img = pyautogui.locateCenterOnScreen(config.IMGS_FLDR+inimg1, grayscale=True, confidence=.8)
             if img is not None:
                 break 

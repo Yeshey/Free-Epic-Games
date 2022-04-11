@@ -116,6 +116,8 @@ class Screen:
     def wait_to_see(self,inimg1, inimg2=None, moveMouse = True, timeout=20, minimumMatches=3, show = False):
         time.sleep(0.5)
         if (moveMouse == True):
+            if (self.sceneHeigh == 1):
+                self.sceneHeigh = pyautogui.size()[1]
             pyautogui.moveTo(1,self.sceneHeigh/2)
         print("looking for",inimg1, end="")
         start_time = datetime.now()

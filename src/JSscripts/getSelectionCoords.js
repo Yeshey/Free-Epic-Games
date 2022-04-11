@@ -13,5 +13,5 @@ if (sel.rangeCount) {
             result = "" + x + " " + y;
         }
     }
+    //navigator.clipboard.writeText(result);
 }
-navigator.clipboard.writeText(result);  
